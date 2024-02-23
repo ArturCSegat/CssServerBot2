@@ -1,29 +1,39 @@
-from subprocess import Popen, PIPE
+from subprocess import Popen
+import os
 
+from .rcon import Rcon, RconType
+from .ip_utils import get_local_ip
+
+PATH = os.getenv("SRCDS_PATH")
+if PATH is None:
+    print("set the SRCDS_PATH env variable")
+    exit(1)
+PORT = os.getenv("PORT")
+if PORT is None:
+    PORT = 27015
+PORT = int(PORT)
+IP = os.getenv("IP")
+if IP is None:
+    IP = get_local_ip()
+PASSWD = os.getenv("RCON_PASSWD")
+if PASSWD is None:
+    print("must set the RCON_PASSWD env variable")
+    exit(1)
 
 class Server:
-    def __init__(self, ip: str):
-        # REAL
-        # self.process: Popen = Popen(["C:\\css\\srcds.exe"], stdin=PIPE, stdout=PIPE)
+    def __init__(self):
+        self.__process: Popen = Popen([
+            f"{PATH} -console -game cstrike -secure +map cs_office -autoupdate +log on +maxplayers 32 -port {PORT} +ip {IP} +exec server.cfg\n"
+            ])
+        self.__rcon: Rcon = Rcon(IP, PORT, PASSWD)
 
-        # FAKE
-        self.process: Popen = Popen(["python3", "css.py"], stdin=PIPE, stdout=PIPE)
-
-        if self.process.stdin is None or self.process.stdout is None:
+        if self.__process.stdin is None or self.__process.stdout is None:
             exit(1)
-
-        # self.process.stdin.write(bytes(f"-console -game cstrike -secure +map cs_office -autoupdate +log on +maxplayers 32 -port 27015 +ip {ip} +exec server.cfg\n", "utf-8"))
 
         self.map: str = "bosta"
 
     def change_level_to(self, map: str) -> None:
         if map == self.map:
             return
-        if self.process.stdin is None or self.process.stdout is None:
-            return
 
-        self.process.stdin.write(bytes(f"changelevel {map}\n", "utf-8"))
-        self.process.stdin.flush()
-
-    def __del__(self):
-        print(str(self.process.communicate()))
+        self.__rcon.send_command(f"changelevel {map}\n", RconType.SERVERDATA_EXECCOMMAND)

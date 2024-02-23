@@ -8,6 +8,7 @@ import ip_utils
 # Initialize the bot
 TOKEN = os.getenv("TOKEN")
 if TOKEN is None:
+    print("set the TOKEN env variable")
     exit(1)
 intents = discord.Intents.all()
 intents.presences = True
