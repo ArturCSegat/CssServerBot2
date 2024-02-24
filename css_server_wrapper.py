@@ -35,4 +35,6 @@ class Server:
 
         self.__rcon.send_command(f"changelevel {map}", RconType.SERVERDATA_EXECCOMMAND)
 
+    def __del__(self):
+        self.__process.kill()
 
