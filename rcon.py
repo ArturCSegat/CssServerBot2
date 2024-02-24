@@ -2,6 +2,7 @@ from socket import socket, AF_INET, SOCK_STREAM, error as sock_err
 from enum import Enum
 import struct
 import random
+from sys import byteorder
 
 class RconType(Enum):
     SERVERDATA_EXECCOMMAND = 2
@@ -43,9 +44,17 @@ class Rcon:
 
     def auth(self) -> None | RconError:
         try: 
+            """
+                Weird ness is caused becaused after auth, server will respondo with emppty package, and then ith real package, of
+                wich we only care about the id
+            """
             self.send_command(self.passwd, RconType.SERVERDATA_AUTH)
             bs = self.sock.recv(4)
-            id = int.from_bytes(bs, byteorder="little")
+            size = int.from_bytes(bs, byteorder="little")
+            _ = self.sock.recv(size) # ignore empty response
+            size = int.from_bytes(self.sock.recv(4), byteorder="little") # get size of real
+            id  = int.from_bytes(self.sock.recv(4), byteorder="little") # read id of real
+            _ = self.sock.recv(size - 4) # ignore rest
         except sock_err:
             return RconError.SockError
 
@@ -53,13 +62,19 @@ class Rcon:
             return RconError.AuthError
         return None
 
-    def send_command(self, body: str, type: RconType) -> int | RconSockError:
+    def send_command(self, body: str, type: RconType) -> str | RconSockError:
         id = random.randint(1, 99999)
         size = len(body) + 10
 
         buffer = struct.pack('<iii', size, id, type.value) + body.encode() + bytes([0, 0])
         try:
-            return self.sock.send(buffer)
+            self.sock.send(buffer)
+            size = int.from_bytes(self.sock.recv(4), byteorder="little") # read size
+            _ = self.sock.recv(4) # ignore id
+            _ = self.sock.recv(4) # ignore type
+            cont = self.sock.recv(size - 8) # read content
+            return str(cont)
+
         except sock_err as e:
             return e
 
