@@ -1,5 +1,5 @@
 # CssServerBot2
-## Rcon wrapper to handle Counter Strike Source server from a discord bot
+## Rcon wrapper to handle Counter Strike server from a discord bot
 
 # Usage
 
