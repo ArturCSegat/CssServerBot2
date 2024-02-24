@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import os
 
-from css_server_wrapper import Server
+from css_server import Server
 from ip_utils import get_local_ip
 
 # ENV BOOZANZA
@@ -33,7 +33,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 server = Server(PATH, IP, PORT, PASSWD)
 if not isinstance(server, Server):
-    print(server.__str__())
+    print(f"REAL ERROR: {server.__str__()}")
     exit(1)
 
 
@@ -50,7 +50,23 @@ async def hello(ctx):
 
 @bot.command(name="changelevel")
 async def changelevel(ctx, map):
-    server.change_level_to(map)
-    await ctx.send("chnaged")
+    r = server.change_level_to(map)
+    if r == "":
+        r = "changed map"
+    await ctx.send(r)
+
+@bot.command(name="run_command")
+async def run_command(ctx, cmd):
+    real_cmd = ""
+    for c in cmd:
+        if c == '#':
+            real_cmd += ' '
+        else:
+            real_cmd += c
+
+    r = server.run(real_cmd)
+    if r == "":
+        r = "empty response"
+    await ctx.send(r)
 
 bot.run(TOKEN)

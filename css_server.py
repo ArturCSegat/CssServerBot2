@@ -3,7 +3,7 @@ from rcon import Rcon, RconError, RconType
 from file_utils import valid_srcds_path
 
 class Server:
-    __process: Popen 
+    __process: Popen
     __rcon: Rcon
     __map: str
 
@@ -29,12 +29,21 @@ class Server:
         self.__map = "bosta"
         return self
 
-    def change_level_to(self, map: str) -> None:
+    def change_level_to(self, map: str) -> str:
         if map == self.__map:
-            return
+            return "bad map"
+        r = self.__rcon.send_command(f"changelevel {map}", RconType.SERVERDATA_EXECCOMMAND)
+        if isinstance(r, str):
+            return r
+        return "bad command"
 
-        self.__rcon.send_command(f"changelevel {map}", RconType.SERVERDATA_EXECCOMMAND)
+    def run(self, cmd: str) -> str:
+        r = self.__rcon.send_command(cmd, RconType.SERVERDATA_EXECCOMMAND)
+        if isinstance(r, str):
+            return r
+        return "bad command"
 
     def __del__(self):
-        self.__process.kill()
+        if self.__process:
+            self.__process.kill()
 
