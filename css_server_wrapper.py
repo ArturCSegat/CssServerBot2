@@ -16,10 +16,9 @@ class Server:
                 return validation
 
             try:
-                self.__process = Popen([
-                    f"{path}/srcds.exe -console -game cstrike -secure +map cs_office -autoupdate +log on +maxplayers 32 -port {port} +ip {ip} +exec server.cfg\n"
-                    ])
+                self.__process = Popen([f"{path}/srcds.exe",  "-console", "-game", "cstrike", "-secure", "+map", "cs_office", "-autoupdate", "+log", "on", "+maxplayers",  "32", "-port", str(port), "+ip", str(ip), "+exec", "server.cfg"])
             except OSError as e:
+                print('porra')
                 return e 
 
         con = Rcon(ip, port, passwd)
