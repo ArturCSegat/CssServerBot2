@@ -1,7 +1,7 @@
 from subprocess import Popen
 import os
 
-from .rcon import Rcon, RconType
+from .rcon import Rcon, RconError, RconType
 from .ip_utils import get_local_ip
 
 PATH = os.getenv("SRCDS_PATH")
@@ -25,7 +25,12 @@ class Server:
         self.__process: Popen = Popen([
             f"{PATH} -console -game cstrike -secure +map cs_office -autoupdate +log on +maxplayers 32 -port {PORT} +ip {IP} +exec server.cfg\n"
             ])
-        self.__rcon: Rcon = Rcon(IP, PORT, PASSWD)
+        con: Rcon | RconError = Rcon(IP, PORT, PASSWD)
+        if not isinstance(con, Rcon):
+            # TODO
+            print("TODOOOO")
+            exit(1)
+        self.__rcon = con
 
         if self.__process.stdin is None or self.__process.stdout is None:
             exit(1)
