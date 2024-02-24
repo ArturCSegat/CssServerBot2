@@ -3,16 +3,12 @@ from discord.ext import commands
 import os
 
 from css_server_wrapper import Server
-from .ip_utils import get_local_ip
+from ip_utils import get_local_ip
 
-# Initialize the bot
+# ENV BOOZANZA
 TOKEN = os.getenv("TOKEN")
 if TOKEN is None:
     print("set the TOKEN env variable")
-    exit(1)
-PATH = os.getenv("SRCDS_PATH")
-if PATH is None:
-    print("set the SRCDS_PATH env variable")
     exit(1)
 PORT = os.getenv("PORT")
 if PORT is None:
@@ -21,6 +17,10 @@ PORT = int(PORT)
 IP = os.getenv("IP")
 if IP is None:
     IP = get_local_ip()
+PATH = os.getenv("SRCDS_PATH")
+if PATH is None:
+    print(f"The SRCDS_PATH env variable is not set, tring to access existing server at {IP}:{PORT}")
+    PATH = ""
 PASSWD = os.getenv("RCON_PASSWD")
 if PASSWD is None:
     print("must set the RCON_PASSWD env variable")
@@ -33,7 +33,8 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 server = Server(PATH, IP, PORT, PASSWD)
 if not isinstance(server, Server):
-    raise server
+    print(server.__str__())
+    exit(1)
 
 
 @bot.event
