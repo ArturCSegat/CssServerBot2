@@ -11,7 +11,7 @@ class RconAuthError(Exception):
     def __init__(self, msg="Bad Auth in RCON"):
         super().__init__(msg)
 
-class RconError(Enum):
+class RconError(Enum, Exception):
      RconSockError = sock_err
      RconAuthError = RconAuthError
 
@@ -51,12 +51,14 @@ class Rcon:
             return RconError.RconAuthError
         return None
 
-    def send_command(self, body: str, type: RconType) -> int:
+    def send_command(self, body: str, type: RconType) -> int | sock_err:
         id = random.randint(1, 99999)
         size = len(body) + 10
 
         buffer = struct.pack('<iii', size, id, type) + body.encode() + bytes([0, 0])
-
-        return self.sock.send(buffer)
+        try:
+            return self.sock.send(buffer)
+        except sock_err as e:
+            return e
 
 
