@@ -7,3 +7,10 @@ def valid_srcds_path(path: str) -> OSError | None:
         return OSError("invalid path: does not contain srcds.exe")
     if not "cstrike" in os.listdir(path):
         return OSError("does not have cs source installed in source dedicated server")
+
+def valid_map(map_name: str, maps_dir_path: str) -> OSError | None:
+    if not os.path.isdir(maps_dir_path):
+        return OSError("path to maps directory is not a real directory")
+    map_file = map_name + ".bsp"
+    if not map_file in os.listdir(maps_dir_path):
+        return OSError("Map Not found")

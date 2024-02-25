@@ -36,17 +36,10 @@ if not isinstance(server, Server):
     print(f"REAL ERROR: {server.__str__()}")
     exit(1)
 
-
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="Css"))
-
-
-@bot.command(name="hello")
-async def hello(ctx):
-    await ctx.send("Hello there!")
-
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="Counte Strike Source"))
 
 @bot.command(name="changelevel")
 async def changelevel(ctx, map):

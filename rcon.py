@@ -2,6 +2,7 @@ from socket import socket, AF_INET, SOCK_STREAM, error as sock_err
 from enum import Enum
 import struct
 import random
+import typing
 
 class RconType(Enum):
     SERVERDATA_EXECCOMMAND = 2
@@ -10,12 +11,9 @@ class RconType(Enum):
 class RconAuthError(Exception):
     def __init__(self, msg="Bad Auth in RCON"):
         super().__init__(msg)
-
 RconSockError = sock_err
 
-class RconError(Enum):
-     SockError = RconSockError
-     AuthError = RconAuthError
+RconError = typing.Union[RconSockError, RconAuthError]
 
 class Rcon:
     ip: str
@@ -33,7 +31,7 @@ class Rcon:
             self.sock = socket(AF_INET, SOCK_STREAM)
             self.sock.connect((self.ip, self.port))
         except sock_err:
-            return RconError.SockError
+            return RconSockError("Could not open socket to rcon server")
         
         auth = self.auth()
         if auth is not None:
@@ -54,11 +52,11 @@ class Rcon:
             size = int.from_bytes(self.sock.recv(4), byteorder="little") # get size of real
             bsid = self.sock.recv(4) # get bytes of id
             _ = self.sock.recv(size - 4) # ignore rest
-        except sock_err:
-            return RconError.SockError
+        except sock_err as e:
+            return RconSockError(e.__str__())
 
         if bsid == bytes([0xff, 0xff, 0xff, 0xff]):
-            return RconError.AuthError
+            return RconAuthError("Received negative response from server, bad password")
         return None
 
     """
