@@ -1,9 +1,11 @@
 import discord
 from discord.ext import commands
 import os
+import asyncio
 
-from css_server import Server
+from css_server import CssServer
 from ip_utils import get_local_ip
+from scraper_wrapper import GameBananaScraper
 
 # ENV BOOZANZA
 TOKEN = os.getenv("TOKEN")
@@ -31,10 +33,11 @@ intents.presences = True
 intents.messages = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-server = Server(PATH, IP, PORT, PASSWD)
-if not isinstance(server, Server):
+server = CssServer(PATH, IP, PORT, PASSWD)
+if not isinstance(server, CssServer):
     print(f"REAL ERROR: {server.__str__()}")
     exit(1)
+scraper = GameBananaScraper()
 
 @bot.event
 async def on_ready():
@@ -48,8 +51,8 @@ async def changelevel(ctx, map):
         r = "changed map"
     await ctx.send(r)
 
-@bot.command(name="run_command")
-async def run_command(ctx, cmd):
+@bot.command(name="run")
+async def run(ctx, cmd):
     real_cmd = ""
     for c in cmd:
         if c == '#':
@@ -60,6 +63,32 @@ async def run_command(ctx, cmd):
     r = server.run(real_cmd)
     if r == "":
         r = "empty response"
+    await ctx.send(r)
+
+@bot.command(name="download_map")
+async def download_map(ctx, map):
+    if scraper.scrape(map) is False:
+        await ctx.send("Faild to scrape map")
+        return
+    call = await ctx.send(f"is this the map you wnat? {scraper.last_map_url()}")
+    await call.add_reaction("👍")
+    await call.add_reaction("🔴")
+    await ctx.send("conta até 5")
+    await asyncio.sleep(5)
+
+    res = await call.channel.fetch_mssage(call.id)
+
+    sim = res.reactions[0].count
+    nao = res.reactions[1].count
+
+    if not (sim > nao and sim >= 2):
+        await ctx.send("votação disse que não, cancelando")
+        return
+
+    scraper.save(f"{PATH}/cstrike/maps/")
+    r = server.change_level_to(map)
+    if r == "":
+        r = "changed map"
     await ctx.send(r)
 
 bot.run(TOKEN)

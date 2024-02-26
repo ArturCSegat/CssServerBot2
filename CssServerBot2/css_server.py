@@ -12,7 +12,7 @@ class ServerCommandError(Exception):
 
 ServerError = typing.Union[ServerMapError, ServerCommandError]
 
-class Server:
+class CssServer:
     __process: Popen
     __rcon: Rcon
     __map: str
@@ -20,7 +20,7 @@ class Server:
     __ip: str
     __port: int
 
-    def __new__(cls, path: str, ip: str, port: int, passwd: str) -> 'Server | RconError | OSError':
+    def __new__(cls, path: str, ip: str, port: int, passwd: str) -> 'CssServer | RconError | OSError':
         self =  super().__new__(cls)
         
         self.__ip = ip
