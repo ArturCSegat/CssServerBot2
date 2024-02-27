@@ -11,7 +11,7 @@
 
 `set IP=<ip of your server, if empty will get yout local ip>`
 
-`set PORT=<port of your server, defaults to 27015>`
+`set PORT=<port of your server, defaults to 27015, if default fails tri 27021>`
 
 `set RCON_PASSWD=<your Rcon password, you should set it in server.cfg>`
 
@@ -28,7 +28,8 @@
 
 `export IP="<ip of your server, if empty will get yout local ip>"`
 
-`export PORT="<port of your server, defaults to 27015>"`
+`export PORT="<port of your server, defaults to 27015, if default fails try 27021
+>"`
 
 `export RCON_PASSWD="<your Rcon password, you should set it in server.cfg>"`
 
