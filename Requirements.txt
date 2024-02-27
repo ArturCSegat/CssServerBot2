@@ -1,3 +1,4 @@
 discord
 rarfile
 requests
+py7zr

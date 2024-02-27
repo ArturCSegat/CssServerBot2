@@ -33,9 +33,9 @@ class CssServer:
                 return validation
 
             try:
-                self.__process = Popen([f"{path}/srcds.exe",  "-console", "-game", "cstrike", "-secure", "+map", "cs_office", "-autoupdate", "+log", "on", "+maxplayers",  "32", "-port", str(port), "+ip", str(ip), "+exec", "server.cfg"])
+                self.__process = Popen([f"{path}/srcds.exe",  "-console", "-game", "cstrike", "-secure", "+map", "cs_office", "-autoupdate", "+log", "on", "+maxplayers",  "32", "+port", str(port), "+exec", "server.cfg"])
             except OSError as e:
-                print('porra')
+                print(f"{path}/srcds.exe")
                 return e 
 
         con = Rcon(ip, port, passwd)

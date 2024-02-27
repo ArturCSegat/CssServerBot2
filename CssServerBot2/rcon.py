@@ -29,6 +29,8 @@ class Rcon:
         
         try:
             self.sock = socket(AF_INET, SOCK_STREAM)
+            print(self.ip)
+            print(self.port)
             self.sock.connect((self.ip, self.port))
         except sock_err:
             return RconSockError("Could not open socket to rcon server")

@@ -3,6 +3,7 @@ import requests
 import rarfile
 import zipfile
 import shutil
+import py7zr as sz
 
 def valid_srcds_path(path: str) -> OSError | None:
     if not os.path.isdir(path):
@@ -55,6 +56,18 @@ def extract_bsp(compressed_path, outputfolder="./") -> OSError | str:
     elif zipfile.is_zipfile(compressed_path):
         zi = zipfile.ZipFile(compressed_path)
         for fil in zi.infolist():
+            if fil.filename.endswith('.bsp'):
+                zi.extract(fil.filename, outputfolder)
+
+                file_name = os.path.basename(fil.filename)
+                parent_dir = os.path.dirname(fil.filename)
+                if parent_dir != '':
+                    shutil.move(f"{outputfolder}/{parent_dir}/{file_name}", f"{outputfolder}/{file_name}")
+                    os.rmdir(f"{outputfolder}/{parent_dir}")
+                return str(os.path.basename(fil.filename))
+    elif sz.is_7zfile(compressed_path):
+        zi = sz.SevenZipFile(compressed_path)
+        for fil in zi.list():
             if fil.filename.endswith('.bsp'):
                 zi.extract(fil.filename, outputfolder)
 

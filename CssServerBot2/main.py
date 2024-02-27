@@ -67,6 +67,7 @@ async def run(ctx, cmd):
 
 @bot.command(name="download_map")
 async def download_map(ctx, map):
+    await ctx.send("Procuando")
     if scraper.scrape(map) is False:
         await ctx.send("Faild to scrape map")
         return
@@ -86,7 +87,7 @@ async def download_map(ctx, map):
         return
 
     scraper.save(f"{PATH}/cstrike/maps")
-    r = server.change_level_to(map)
+    r = server.change_level_to(scraper.last_map_name())
     if r == "":
         r = "changed map"
     await ctx.send(r)

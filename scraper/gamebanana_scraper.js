@@ -13,7 +13,7 @@ const scroll = async (page, css_s) => {
     const name = process.argv[2]
 
     // Navigate the page to a URL
-    await page.goto('https://gamebanana.com/search?_sOrder=best_match&_sSearchString=cs+source+' + name, {waitUntil:'domcontentloaded', timeout:0});
+    await page.goto('https://gamebanana.com/search?_sModelName=Mod&_sOrder=date&_idGameRow=2&_sSearchString=' + name, {waitUntil:'domcontentloaded', timeout:0});
     await page.setViewport({width: 1080, height: 1024});
 
     await new Promise(resolve => setTimeout(resolve, 4000));
@@ -32,14 +32,14 @@ const scroll = async (page, css_s) => {
     await scroll(page, download_selector)
     await page.waitForSelector(download_selector)
     // https://gamebanana.com/mods/download/123880#FileInfo_360449
-    const download_link = await page.evaluate((download_selector) => {
+    const [download_link, map_name] = await page.evaluate((download_selector) => {
         const link = document.querySelector(download_selector).href
         const info = link.split('#')[1]
         const id = info.split('_')[1]
-        return "https://gamebanana.com/dl/" + id
+        return ["https://gamebanana.com/dl/" + id, document.getElementById("PageTitle").innerText.split('\n')[0]]
     }, download_selector)
     
-    console.log(name)
+    console.log(map_name)
     console.log(page.url())
     console.log(download_link)
     await browser.close()

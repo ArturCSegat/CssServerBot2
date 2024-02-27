@@ -25,6 +25,9 @@ class GameBananaScraper():
         self.__last_map_request = remove_cr(scrapper_process.stdout.readline().decode())
         self.__last_map_url = remove_cr(scrapper_process.stdout.readline().decode())
         self.__last_download_url = remove_cr(scrapper_process.stdout.readline().decode())
+        print(self.__last_map_request)
+        print(self.__last_map_url)
+        print(self.__last_download_url)
 
         return True
 
@@ -44,7 +47,6 @@ class GameBananaScraper():
         error = file_utils.download_zip_file(self.__last_download_url, out_file)
 
         if error is not None:
-            os.remove(out_file)
             return error
         out = file_utils.extract_bsp(out_file, out_dir)
         if isinstance(out, OSError):
