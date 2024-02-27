@@ -66,7 +66,6 @@ class Rcon:
     """
     def send_command(self, body: str, type: RconType, returncontent=True) -> str | RconSockError:
         id = random.randint(1, 99999)
-        print(f"generated: {id}")
         size = len(body) + 10
 
         buffer = struct.pack('<iii', size, id, type.value) + body.encode() + bytes([0, 0])

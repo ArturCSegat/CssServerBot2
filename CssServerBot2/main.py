@@ -76,7 +76,7 @@ async def download_map(ctx, map):
     await ctx.send("conta até 5")
     await asyncio.sleep(5)
 
-    res = await call.channel.fetch_mssage(call.id)
+    res = await call.channel.fetch_message(call.id)
 
     sim = res.reactions[0].count
     nao = res.reactions[1].count
@@ -85,7 +85,7 @@ async def download_map(ctx, map):
         await ctx.send("votação disse que não, cancelando")
         return
 
-    scraper.save(f"{PATH}/cstrike/maps/")
+    scraper.save(f"{PATH}/cstrike/maps")
     r = server.change_level_to(map)
     if r == "":
         r = "changed map"

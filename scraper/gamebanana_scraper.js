@@ -28,7 +28,7 @@ const scroll = async (page, css_s) => {
     
     const download_selector = "div.DownloadOptions > a.GreenColor"
 
-    await new Promise(resolve => setTimeout(resolve, 4000));
+    await new Promise(resolve => setTimeout(resolve, 5000));
     await scroll(page, download_selector)
     await page.waitForSelector(download_selector)
     // https://gamebanana.com/mods/download/123880#FileInfo_360449

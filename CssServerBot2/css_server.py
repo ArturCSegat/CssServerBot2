@@ -49,7 +49,8 @@ class CssServer:
     def change_level_to(self, map: str) -> str | ServerError:
         if map == self.__map:
             return ServerMapError("This Map is already selected")
-        validation = valid_map(map, self.__path + "/cstrike/map")
+        validation = valid_map(map, self.__path + "/cstrike/maps")
+
         if validation is not None:
             return ServerMapError(validation.__str__())
         

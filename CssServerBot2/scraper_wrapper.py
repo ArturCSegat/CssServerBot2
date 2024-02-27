@@ -1,5 +1,6 @@
 from subprocess import Popen, PIPE
 import file_utils
+import os
 
 class GameBananaScraper():
     __last_map_url: str
@@ -21,9 +22,9 @@ class GameBananaScraper():
         if scrapper_process.stdout is None:
             return False
 
-        self.__last_map_request = str(scrapper_process.stdout.readline())
-        self.__last_map_url = str(scrapper_process.stdout.readline())
-        self.__last_download_url = str(scrapper_process.stdout.readline())
+        self.__last_map_request = remove_cr(scrapper_process.stdout.readline().decode())
+        self.__last_map_url = remove_cr(scrapper_process.stdout.readline().decode())
+        self.__last_download_url = remove_cr(scrapper_process.stdout.readline().decode())
 
         return True
 
@@ -39,10 +40,22 @@ class GameBananaScraper():
             game banana may save maps in .rar or .zip, in our case if we get a .rar file, we well endup
             renaming it to .zip, but rarfile.israrfile() does not check via file name, so its fine
         """
-        error = file_utils.download_zip_file(self.__last_download_url, f"{out_dir}/{self.__last_map_request}.zip")
-        if error is not None:
-            return error
-        out = file_utils.extract_bsp(f"{out_dir}/{self.__last_map_request}.zip", out_dir)
-        if isinstance(out, OSError):
-            return out
+        out_file =  f"{out_dir}/{self.__last_map_request}.zip"
+        error = file_utils.download_zip_file(self.__last_download_url, out_file)
 
+        if error is not None:
+            os.remove(out_file)
+            return error
+        out = file_utils.extract_bsp(out_file, out_dir)
+        if isinstance(out, OSError):
+            os.remove(out_file)
+            return out
+        os.remove(out_file)
+
+def remove_cr(s: str) -> str:
+    n = ""
+    for c in s:
+        if c == '\n':
+            continue
+        n += c
+    return n

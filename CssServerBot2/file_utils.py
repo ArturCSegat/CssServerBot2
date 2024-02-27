@@ -40,7 +40,6 @@ def extract_bsp(compressed_path, outputfolder="./") -> OSError | str:
         for fil in rar.infolist(): # checks fot the bsp in any depth
             if fil.filename.endswith('.bsp'):
                 rar.extract(fil.filename, outputfolder)
-                os.remove(compressed_path)
 
                 # if the bsp was in a folder inside the arquvie it would extract the folder with it, this extracts it from
                 # the folder it came from and than deletes the folder
@@ -50,7 +49,6 @@ def extract_bsp(compressed_path, outputfolder="./") -> OSError | str:
                     shutil.move(f"{outputfolder}/{parent_dir}/{file_name}", f"{outputfolder}/{file_name}")
                     os.rmdir(f"{outputfolder}/{parent_dir}")
 
-
                 return str(os.path.basename(fil.filename))
         os.remove(compressed_path)
         return OSError("Invalid rar archive no bsp file")
@@ -59,7 +57,6 @@ def extract_bsp(compressed_path, outputfolder="./") -> OSError | str:
         for fil in zi.infolist():
             if fil.filename.endswith('.bsp'):
                 zi.extract(fil.filename, outputfolder)
-                os.remove(compressed_path)
 
                 file_name = os.path.basename(fil.filename)
                 parent_dir = os.path.dirname(fil.filename)
@@ -67,9 +64,7 @@ def extract_bsp(compressed_path, outputfolder="./") -> OSError | str:
                     shutil.move(f"{outputfolder}/{parent_dir}/{file_name}", f"{outputfolder}/{file_name}")
                     os.rmdir(f"{outputfolder}/{parent_dir}")
                 return str(os.path.basename(fil.filename))
-        os.remove(compressed_path)
         return OSError("Invalid zip archive no bsp file")
     else: # could modify this to raise an exepton but lol
-        os.remove(compressed_path)
         return OSError("archive type not suported")
 
