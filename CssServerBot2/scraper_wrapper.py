@@ -28,7 +28,6 @@ class GameBananaScraper():
         print(self.__last_map_request)
         print(self.__last_map_url)
         print(self.__last_download_url)
-
         return True
 
     def last_map_name(self):
@@ -43,16 +42,7 @@ class GameBananaScraper():
             game banana may save maps in .rar or .zip, in our case if we get a .rar file, we well endup
             renaming it to .zip, but rarfile.israrfile() does not check via file name, so its fine
         """
-        out_file =  f"{out_dir}/{self.__last_map_request}.zip"
-        error = file_utils.download_zip_file(self.__last_download_url, out_file)
-
-        if error is not None:
-            return error
-        out = file_utils.extract_bsp(out_file, out_dir)
-        if isinstance(out, OSError):
-            os.remove(out_file)
-            return out
-        os.remove(out_file)
+        return file_utils.save_map(out_dir, self.last_map_name(), self.last_map_download_url())
 
 def remove_cr(s: str) -> str:
     n = ""

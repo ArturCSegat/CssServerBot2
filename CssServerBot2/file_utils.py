@@ -81,3 +81,14 @@ def extract_bsp(compressed_path, outputfolder="./") -> OSError | str:
     else: # could modify this to raise an exepton but lol
         return OSError("archive type not suported")
 
+def save_map(location: str, name: str, download_link: str) -> OSError | None:
+    out_file =  f"{location}/{name}.zip"
+    error = download_zip_file(download_link, out_file)
+
+    if error is not None:
+        return error
+    out = extract_bsp(out_file, location)
+    if isinstance(out, OSError):
+        os.remove(out_file)
+        return out
+    os.remove(out_file)

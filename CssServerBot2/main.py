@@ -6,6 +6,7 @@ import asyncio
 from css_server import CssServer
 from ip_utils import get_local_ip
 from scraper_wrapper import GameBananaScraper
+import file_utils
 
 # ENV BOOZANZA
 TOKEN = os.getenv("TOKEN")
@@ -91,5 +92,13 @@ async def download_map(ctx, map):
     if r == "":
         r = "changed map"
     await ctx.send(r)
+
+@bot.command(name="download_map_link")
+async def download_map_link(ctx, name, link):
+    r = file_utils.save_map(f"{PATH}/cstrike/maps", name, link)
+    if r is not None:
+        await ctx.send(r.__str__())
+        return
+    await ctx.send("dinwaloaded")
 
 bot.run(TOKEN)
