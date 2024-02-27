@@ -11,7 +11,9 @@
 
 `set IP=<ip of your server, if empty will get yout local ip>`
 
-`set PORT=<port of your server, defaults to 27015, if default fails tri 27021>`
+`set PORT=<port of your server, defaults to 27015>`
+
+if deafault fails try 27021
 
 `set RCON_PASSWD=<your Rcon password, you should set it in server.cfg>`
 
@@ -28,12 +30,33 @@
 
 `export IP="<ip of your server, if empty will get yout local ip>"`
 
-`export PORT="<port of your server, defaults to 27015, if default fails try 27021
->"`
+`export PORT="<port of your server, defaults to 27015>"`
+
+if deafault fails try 27021
 
 `export RCON_PASSWD="<your Rcon password, you should set it in server.cfg>"`
 
 `export SRCDS_PATH="<the path to the folder that contains your srcds.exe file, if left empty, will look for a exisiting server in the provided IP>"`
 
 `python3 main.py`
+
+
+# Commands
+
+`!run <command>` 
+
+runs any arbitrary command, spaces are "#"
+so `!run echo#Hello`
+
+`!changelevel <map>` 
+
+short hand for `!run changelevel#<map>`
+
+`!download_map <map>`
+
+scrapes gamebanana for the map you provided and downloads it to the server
+
+`!download_map_link <map name> <donwload link>`
+
+manual version of the last command, does not scrape anything
 
