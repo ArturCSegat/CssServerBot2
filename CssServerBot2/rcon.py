@@ -79,7 +79,7 @@ class Rcon:
             cont = self.sock.recv(size - 8) # read content
             if cont == b'\0\0':
                 return ""
-            return str(cont)
+            return cont.decode()
 
         except sock_err as e:
             return e

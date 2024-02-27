@@ -8,7 +8,7 @@ const scroll = async (page, css_s) => {
 
 (async () => {
     // Launch the browser and open a new blank page
-    const browser = await puppeteer.launch({headless:false});
+    const browser = await puppeteer.launch({headless:true});
     const page = await browser.newPage();
     const name = process.argv[2]
 
