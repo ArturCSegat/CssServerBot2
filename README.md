@@ -1,9 +1,15 @@
 # CssServerBot2
 ## Rcon wrapper to handle Counter Strike server from a discord bot
 
+# Requires
+-  Python 3 installed
+-  Node js installed
+-  Discord bot token
+-  Source dedicated server intalled
+
 # Usage
 
-## Windows
+#### Windows
 
 `git clone https://github.com/ArturCSegat/CssServerBot2`
 
@@ -22,7 +28,7 @@ if deafault fails try 27021
 `python main.py`
 
 
-## Linux and Mac
+#### Linux and Mac
 
 `git clone https://github.com/ArturCSegat/CssServerBot2`
 
